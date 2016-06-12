@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Контакты{% endblock %}
+{% block content %}
+    <div class="login">
+        <h1>Форма обратной связи</h1>
+        <hr>
+        <div class="contacts">
+        <form action="/contacts" method="POST">
+            {% csrf_token %}
+            <h4>Ваше имя: *</h4> <input type="text" name="subject" class="input_width" placeholder="mylogin1999" required><br>
+            <h4>E-mail: *</h4><input type="email" name="sender" class="input_width" placeholder="email@example.com" required><br><br>
+            <h4>Ваше сообщение: *</h4><textarea name="message" class="input_width" rows="8" required></textarea><br>
+                {% if send_success %}
+                    <text class="contact_text"><h3>Ваше сообщение успешно отправлено.</h3></text>
+                {% elif send_error %}
+                   <text class="contact_text"> <h3>Ваше сообщение не удалось отправить.</h3> </text>
+                {% endif %}
+
+            <br><input type="submit" class="btn btn-success test" value="Отправить сообщение администратору.">
+
+        </form>
+    </div></div>
+{% endblock %}
+{% block footer %} 08.02.2016, Django 1.9, psql 9.3 {% endblock %}
+

@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Регистрация нового аккаунта{% endblock %}
+
+{% block content %}
+    <script>
+    $(function(){
+            $("#date").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
+    </script>
+    <div class="login">
+        <h1>Регистрация</h1>
+        <hr>
+        <form action="/register/" method="POST">
+            {% csrf_token %}
+            <table class="reg_table">
+                <tr>
+                    <td>
+                        <h4>Фамилия</h4>
+                    </td>
+                    <td class="for_td">
+                        {{ form.lastname }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Имя</h4>
+                    </td>
+                    <td class="for_td">
+                        {{ form.firstname }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Логин</h4>
+                    </td>
+                    <td class="for_td">
+                        {{ form.username }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Пароль</h4>
+                    </td>
+                    <td class="for_td">
+                        <input type="password" name="password1" placeholder="enter your password">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Подтверждение пароля</h4>
+                    </td>
+                    <td class="for_td">
+                        <input type="password" name="password2" placeholder="enter again your password">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>email</h4>
+                    </td>
+                    <td class="for_td">
+                        {{ form.email }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Дата рождения</h4>
+                    </td>
+                    <td class="for_td">
+                         {{ form.date_of_birth }}
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <h4>Мобильный телефон</h4>
+                    </td>
+                    <td class="for_td">
+                        {{ form.phone }}
+                    </td>
+                </tr>
+
+            </table>
+            {% if reg_error %}
+                <br>
+                <center><h4> Проверьте правильность ввода данных </h4></center>
+            {% endif %}
+            <br><br><center><input type="submit" class="btn btn-inverse" value="Cоздать аккаунт"></center>
+
+        </form>
+    </div>
+{% endblock %}
+{% block footer %} 08.02.2016, Django 1.9, psql 9.3 {% endblock %}
+

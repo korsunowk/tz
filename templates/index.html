@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Резюме{% endblock %}
+{% block content %}
+	<div class="img">
+		<img src="{% static 'img/aloha.png'%}" height="400" width="300">
+	</div>
+	<div class="text">
+<h3>Корсунов Константин Андреевич</h3>
+
+<strong>Год рождения:</strong> 1996<br>
+<strong>Место проживания:</strong> Запорожье, ул. Бородинская 11, кв. 15<br>
+<strong>Телефон:</strong> 380980905082<br>
+<strong>E-mail:</strong> korsunowk@yandex.ua<br>
+
+<strong>Цель:</strong> получение должности python/ Django web разработчика <br>
+
+<strong>Образование:</strong>
+2012 - 2016  Запорожский электротехнический колледж, специальность «Разработка программного обеспечения» <br>
+<strong>Опыт профессиональной и трудовой деятельности:</strong>
+Опыта работы нет.<br>
+<strong>Навыки:</strong>
+Умение работать в Windows/Linux OS, опыт работы в Python 1 год, в Django 3 месяца ( всё самообучение ), Flask, sqlite, postgres, Microsoft sql server, MySQL, есть небольшой опыт в PHP, C#, C++, VB, html, css, JavaScript, Ajax, JQuery. Присутствует знание ООП и шаблонов проектирования.<br>
+<strong>Личностные качества:</strong>
+Добросовестно отношусь к работе, стремлюсь закончить максимально работу в установленные сроки и в максимальной полноте выполнения. Быстро и с интересом осваиваю новую информацию.<br>
+
+	</div>
+{% endblock %}
+{% block footer %} 08.02.2016, Django 1.9, psql 9.3 {% endblock %}
+

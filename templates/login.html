@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Вход в аккаунт{% endblock %}
+{% block content %}
+    <div class="login">
+        <h1>Войдите в свой аккаунт</h1>
+        <hr>
+        <form action="/login/" method="POST">
+            {% csrf_token %}
+            <h4>Login</h4> <input type="text" name="username" placeholder="enter your login" required><br>
+            <h4>Password</h4><input type="password" name="password" placeholder="enter your password" required><br><br>
+
+            {% if login_error %}
+                <h4> Проверьте правильность ввода данных. </h4>
+            {% endif %}
+
+            <input type="submit" class="btn btn-inverse" value="Войти"><br><br>
+            Dont have account? <a class="reg" href="/register/">Register here.</a>
+
+        </form>
+    </div>
+{% endblock %}
+{% block footer %} 08.02.2016, Django 1.9, psql 9.3 {% endblock %}
+

@@ -1,0 +1,159 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+
+{% block title %}Личный кабинет{% endblock %}
+
+{% block content %}
+    <script>
+    $(function(){
+            $("#date").datepicker({ dateFormat: 'yy-mm-dd' });
+    });
+    </script>
+    <table>
+        <tr>
+            <td>
+                <div class="avatar">
+	                <img src="{{ user.avatar.url }}" height="200" width="225"><br>
+                    <form action="/new_avatar/" method="POST">
+
+                    </form>
+                    <a class="btn btn-success ava" href="#">Изменить аватар</a><br>
+                    <a class="btn btn-info ava" href="#">Редактировать аватар</a><br>
+                    <a class="btn btn-danger ava" href="#">Удалить аватар</a>
+                </div>
+            </td>
+            <td>
+                <div class="edit1">
+                    <form action="/kabinet/" method="POST">
+                        {% csrf_token %}
+                <table class="edit_table">
+                    <tr>
+                        <td colspan="2">
+                            <div class="edit_text">Изменение основной информации о пользователе:</div><hr>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>Фамилия</h4>
+                        </td>
+                        <td class="for_td">
+                            <input type="text" name="lastname" value="{{ user.lastname }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>Имя</h4>
+                        </td>
+                        <td class="for_td">
+                            <input type="text" name="firstname" value="{{ user.firstname }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>Логин</h4>
+                        </td>
+                        <td class="for_td">
+                            <input type="text" name="username" value="{{ user.username }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>email</h4>
+                        </td>
+                        <td class="for_td">
+                            <input type="email" name="email" value="{{ user.email }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>Дата рождения<br></h4>
+                        </td>
+                        <td class="for_td">
+                             <input type="text" id="date" name="date_of_birth" value="{{ user.date_of_birth|date:"Y-m-d" }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4>Мобильный телефон</h4>
+                        </td>
+                        <td class="for_td">
+                            <input type="text" name="phone" value="{{ user.phone }}" required>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <br><center><input type="submit" class="btn btn-inverse" value="Изменить данные"></center>
+                        </td>
+                    </tr>
+                </table>
+            </form>
+                </div>
+            </td>
+        </tr>
+    </table>
+    <table>
+    <tr>
+        <td>
+            <form method="POST" action="/pass_change/">
+                 {% csrf_token %}
+                <table class="edit_pass">
+
+        <tr>
+            <td colspan="2">
+                <div class="edit_text">Изменение пароля:</div><hr>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h4>Cтарый пароль:</h4>
+            </td>
+            <td class="for_td">
+                <input type="password" name ="old_password" placeholder="enter old password" required>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h4>Новый пароль:</h4>
+            </td>
+            <td class="for_td">
+                <input type="password" name = "new_password1" placeholder="enter your new password" required>
+            </td>
+        </tr>
+        <tr>
+            <td>
+                <h4>Подтвердите новый пароль:</h4>
+            </td>
+            <td class="for_td">
+                <input type="password" name="new_password2" placeholder="enter again your new password" required>
+            </td>
+        </tr>
+                    {% if errors %}
+        <tr>
+            <td colspan="2">
+                <center><h4>{{ errors }}</h4></center>
+            </td>
+        </tr>
+            {% endif %}
+        <tr>
+            <td colspan="2">
+                <br><center><input type="submit" class="btn btn-primary" value="Изменить пароль"></center>
+            </td>
+        </tr>
+
+    </table>
+            </form>
+        </td>
+    <form id="forma" action="/delete_acc/" method="POST">
+        {% csrf_token %}
+        <td class="for_delbut">
+            <input type="submit" onclick="return confirm('Вы подтверждаете удаление?') ? true : false;" class="btn btn-large" value="Удалить аккаунт">
+        </td>
+    </form>
+
+    </tr>
+    </table>
+
+
+{% endblock %}
+{% block footer %} 08.02.2016, Django 1.9, psql 9.3 {% endblock %}
+

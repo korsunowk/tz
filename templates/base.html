@@ -1,0 +1,41 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+<head>
+	<title>{% block title %}{% endblock %}</title>
+	<link rel="stylesheet" href="{% static 'css/bootstrap.css'%}">
+	<link rel="stylesheet" href="{% static 'css/font-awesome.css'%}">
+	<link rel="stylesheet" href="{% static 'css/style.css' %}">
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<link rel="stylesheet" href="{% static 'css/bootstrap-responsive.css'%}">
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.16/themes/base/jquery-ui.css" type="text/css" media="all">
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.2/jquery.min.js"></script>
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+</head>
+<body>
+<div class="all">
+	<div class="header">
+        <ul class="ul_one">
+                <li><a href="/">Главная</a></li>
+                <li><a href="/contacts/">Контакты</a></li>
+            {% if user.is_authenticated %}
+                <li><a href="/kabinet/">Личный кабинет</a></li>
+                <li><img src="{{ user.avatar.url }}" height="30" width="30"> <a href="/kabinet" class="clown">{{ name }}</a> | <a href="/logout" class="clown">Выйти</a></li>
+            {% else %}
+                <li><a href="/login/" class="clown">Войти</a> | <a href="/register/" class="clown">Регистрация</a></li>
+            {% endif %}
+
+		</ul>
+	</div>
+
+    {% block content %}{% endblock %}
+
+</div>
+	<div class="footer">
+		<p class="p_footer">
+			{% block footer %}{% endblock %}
+		</p>
+	</div>
+
+</body>
+</html>
