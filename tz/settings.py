@@ -141,8 +141,8 @@ STATICFILES_DIRS = [
 
 
 EMAIL_HOST = 'smtp.yandex.ua'
-EMAIL_HOST_USER = 'korsunowk@yandex.ua'
-EMAIL_HOST_PASSWORD = 'al501kw1'
+EMAIL_HOST_USER = 'email'
+EMAIL_HOST_PASSWORD = 'password'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 
