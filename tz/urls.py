@@ -24,17 +24,17 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', views.index),
-    url(r'^kabinet/$',views.kabinet),
-    url(r'^login/$',views.login),
+    url(r'^kabinet/$', views.kabinet),
+    url(r'^login/$', views.login),
     url(r'^logout/$', views.logout),
     url(r'^contacts/$', views.contact),
-    url(r'^register/$',views.register),
-    url(r'^pass_change/$',views.password_change),
-    url(r'^delete_acc/$',views.delete_user),
+    url(r'^register/$', views.register),
+    url(r'^pass_change/$', views.password_change),
+    url(r'^delete_acc/$', views.delete_user),
 
 ]
 
 if settings.DEBUG:
     urlpatterns += patterns('django.views.static',
-        (r'media/(?P<path>.*)', 'serve', {'document_root': settings.MEDIA_ROOT}),
-)
+                            (r'media/(?P<path>.*)', 'serve', {'document_root': settings.MEDIA_ROOT}),
+                            )

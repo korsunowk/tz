@@ -2,17 +2,22 @@ from django import forms
 from myuser.models import ExtUser
 from django.contrib.auth.forms import UserCreationForm
 
+
 class UserCreateForm(UserCreationForm):
-    username = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'enter your username','required':'required'}))
-    email = forms.EmailField(required=True,widget=forms.EmailInput(attrs={'required':'required'}))
-    phone = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'enter your phone number','required':'required'}))
-    firstname = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'enter your firstname','required':'required'}))
-    lastname = forms.CharField(required=True, widget=forms.TextInput(attrs={'placeholder': 'enter your lastname','required':'required'}))
-    date_of_birth = forms.CharField(required=True, widget=forms.TextInput(attrs={'required':'required','id':'date'}))
+    username = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={'placeholder': 'enter your username', 'required': 'required'}))
+    email = forms.EmailField(required=True, widget=forms.EmailInput(attrs={'required': 'required'}))
+    phone = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={'placeholder': 'enter your phone number', 'required': 'required'}))
+    firstname = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={'placeholder': 'enter your firstname', 'required': 'required'}))
+    lastname = forms.CharField(required=True, widget=forms.TextInput(
+        attrs={'placeholder': 'enter your lastname', 'required': 'required'}))
+    date_of_birth = forms.CharField(required=True, widget=forms.TextInput(attrs={'required': 'required', 'id': 'date'}))
 
     class Meta:
         model = ExtUser
-        fields = ("username", "email",'phone','firstname','lastname','date_of_birth', "password1", "password2")
+        fields = ("username", "email", 'phone', 'firstname', 'lastname', 'date_of_birth', "password1", "password2")
 
     def save(self, commit=True):
         user = super(UserCreateForm, self).save(commit=False)
@@ -22,6 +27,7 @@ class UserCreateForm(UserCreationForm):
             user.save()
         return user
 
+
 class UserChangeForm(forms.ModelForm):
     username = forms.CharField(required=True)
     email = forms.EmailField(required=True)
@@ -29,6 +35,3 @@ class UserChangeForm(forms.ModelForm):
     firstname = forms.CharField(required=True)
     lastname = forms.CharField(required=True)
     date_of_birth = forms.CharField(required=True)
-
-class Open_Image(forms.ModelForm):
-    image = forms.ImageField()

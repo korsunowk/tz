@@ -4,16 +4,17 @@ from django.contrib.auth.models import AbstractBaseUser
 from django.contrib.auth.models import BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db import models
+
+
 # Create your models here.
 
 class UserManager(BaseUserManager):
-    def create_user(self, username, password=None,  **fields):
-
+    def create_user(self, username, password=None, **fields):
         if not username:
             raise ValueError('Username is required.')
 
         user = self.model(
-            username = username,
+            username=username,
             **fields
 
         )
@@ -23,12 +24,11 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, username, password, **fields):
+        fields.setdefault('is_staff', True)
+        fields.setdefault('is_superuser', True)
+        fields.setdefault('is_admin', True)
 
-        fields.setdefault('is_staff',True)
-        fields.setdefault('is_superuser',True)
-        fields.setdefault('is_admin',True)
-
-        return self.create_user(username=username, password=password,  **fields )
+        return self.create_user(username=username, password=password, **fields)
 
 
 class ExtUser(AbstractBaseUser, PermissionsMixin):
@@ -78,7 +78,7 @@ class ExtUser(AbstractBaseUser, PermissionsMixin):
         blank=True,
         null=True)
     is_active = models.BooleanField(
-        'Active',  
+        'Active',
         default=True
     )
     is_admin = models.BooleanField(
@@ -86,21 +86,17 @@ class ExtUser(AbstractBaseUser, PermissionsMixin):
         default=False
     )
 
-
     def get_full_name(self):
         return self.username
 
     @property
     def is_staff(self):
-
         return self.is_admin
 
     def get_short_name(self):
-
         return self.username
 
     def __str__(self):
-
         return self.username
 
     USERNAME_FIELD = 'username'
