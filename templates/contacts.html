@@ -7,7 +7,7 @@
         <h1>Форма обратной связи</h1>
         <hr>
         <div class="contacts">
-        <form action="/contacts" method="POST">
+        <form action="/contacts/" method="POST">
             {% csrf_token %}
             <h4>Ваше имя: *</h4> <input type="text" name="subject" class="input_width" placeholder="mylogin1999" required><br>
             <h4>E-mail: *</h4><input type="email" name="sender" class="input_width" placeholder="email@example.com" required><br><br>

@@ -25,6 +25,7 @@ def index(request):
     return render_to_response('index.html', args)
 
 
+@csrf_protect
 def contact(request):
     args = {}
     if request.user.is_authenticated():
@@ -45,7 +46,7 @@ def contact(request):
         return render(request, 'contacts.html', args)
 
     else:
-        return render_to_response('contacts.html', args)
+        return render(request, 'contacts.html', args)
 
 
 @csrf_protect
