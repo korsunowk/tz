@@ -3,7 +3,7 @@ from django.shortcuts import render_to_response, redirect, render
 from django.template import RequestContext
 from django.contrib import auth
 from django.core.mail import send_mail
-from .forms import UserCreateForm, AvatarUploadForm
+from .forms import UserCreateForm, AvatarUploadForm, CaptchaForm
 from myuser.models import ExtUser
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
@@ -75,23 +75,28 @@ def logout(request):
 def register(request):
     args = dict()
     args['form'] = UserCreateForm()
+    args['captcha'] = CaptchaForm()
     if request.POST:
         newuser_form = UserCreateForm(request.POST)
-        if newuser_form.is_valid():
-            newuser_form.save()
-            newuser = auth.authenticate(username=newuser_form.cleaned_data['username'],
-                                        password=newuser_form.cleaned_data['password2'])
-            auth.login(request, newuser)
-            try:
-                send_mail('Регистрация на сайте', 'Вы успешно зарегестрировались на сайте !\n Поздравляем!',
-                          'korsunowk@yandex.ua', [request.POST.get('email', '')])
-                return redirect('/')
-            except Exception as e:
-                print(e)
-                args['reg_error'] = 'Error with email mess'
+        captcha_form = CaptchaForm(request.POST)
+        if captcha_form.is_valid():
+            if newuser_form.is_valid():
+                newuser_form.save()
+                newuser = auth.authenticate(username=newuser_form.cleaned_data['username'],
+                                            password=newuser_form.cleaned_data['password2'])
+                auth.login(request, newuser)
+                try:
+                    send_mail('Регистрация на сайте', 'Вы успешно зарегестрировались на сайте !\n Поздравляем!',
+                              'korsunowk@yandex.ua', [request.POST.get('email', '')])
+                    return redirect('/')
+                except Exception as e:
+                    print(e)
+                    return redirect('/')
+            else:
+                args['reg_error'] = 'Error.'
                 args['form'] = newuser_form
         else:
-            args['reg_error'] = 'Error.'
+            args['captcha_error'] = 'Error.'
             args['form'] = newuser_form
     return render(request, 'register.html', args)
 

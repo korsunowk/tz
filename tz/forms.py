@@ -1,6 +1,7 @@
 from django import forms
 from myuser.models import ExtUser
 from django.contrib.auth.forms import UserCreationForm
+from captcha.fields import CaptchaField
 
 
 class UserCreateForm(UserCreationForm):
@@ -39,3 +40,7 @@ class UserChangeForm(forms.Form):
 
 class AvatarUploadForm(forms.Form):
     image = forms.ImageField()
+
+
+class CaptchaForm(forms.Form):
+    captcha = CaptchaField()

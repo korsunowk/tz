@@ -79,12 +79,26 @@
                         {{ form.phone }}
                     </td>
                 </tr>
+                <br>
+                <tr>
+                    <td>
+                        {{ captcha.captcha }}
 
+                    </td>
+                    <td class="for_td">
+                        
+                    </td>
+                </tr>
             </table>
+            {% if captcha_error %}
+                <br>
+                <center><h4> Введите правильно символы с картинки. </h4></center>
+            {% endif %}
             {% if reg_error %}
                 <br>
                 <center><h4> Проверьте правильность ввода данных </h4></center>
             {% endif %}
+
             <br><br><center><input type="submit" class="btn btn-inverse" value="Cоздать аккаунт"></center>
 
         </form>
