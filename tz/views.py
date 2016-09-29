@@ -73,7 +73,7 @@ def logout(request):
 
 
 def register(request):
-    args = {}
+    args = dict()
     args['form'] = UserCreateForm()
     if request.POST:
         newuser_form = UserCreateForm(request.POST)
