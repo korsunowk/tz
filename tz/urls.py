@@ -17,7 +17,7 @@ Including another URLconf
 from django.conf.urls import url
 from django.contrib import admin
 from tz import views, settings
-from django.conf.urls import patterns
+from django.conf.urls.static import static
 
 admin.autodiscover()
 
@@ -31,10 +31,10 @@ urlpatterns = [
     url(r'^register/$', views.register),
     url(r'^pass_change/$', views.password_change),
     url(r'^delete_acc/$', views.delete_user),
-
+    url(r'^new_avatar/$', views.new_avatar),
+    url(r'^change_avatar/$', views.change_avatar),
+    url(r'^delete_avatar/$', views.delete_avatar)
 ]
 
 if settings.DEBUG:
-    urlpatterns += patterns('django.views.static',
-                            (r'media/(?P<path>.*)', 'serve', {'document_root': settings.MEDIA_ROOT}),
-                            )
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

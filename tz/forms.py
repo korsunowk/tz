@@ -28,10 +28,14 @@ class UserCreateForm(UserCreationForm):
         return user
 
 
-class UserChangeForm(forms.ModelForm):
+class UserChangeForm(forms.Form):
     username = forms.CharField(required=True)
     email = forms.EmailField(required=True)
     phone = forms.CharField(required=True)
     firstname = forms.CharField(required=True)
     lastname = forms.CharField(required=True)
     date_of_birth = forms.CharField(required=True)
+
+
+class AvatarUploadForm(forms.Form):
+    image = forms.ImageField()

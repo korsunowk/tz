@@ -99,6 +99,20 @@ class ExtUser(AbstractBaseUser, PermissionsMixin):
     def __str__(self):
         return self.username
 
+    def delete_avatar(self):
+        from django.core.files import File
+        import os
+
+        if os.path.basename(self.avatar.name) != 'avatar.png':
+            self.avatar.delete()
+            new_image = File(open('media/avatars/avatar.png', 'rb'))
+            os.remove('media/avatars/avatar.png')
+            self.avatar.save(name='avatar.png', content=new_image)
+
+    def suicide(self):
+        self.delete_avatar()
+        self.delete()
+
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'phone', 'firstname', 'lastname', 'date_of_birth']
     objects = UserManager()

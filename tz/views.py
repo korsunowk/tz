@@ -1,13 +1,14 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render_to_response, redirect
+from django.shortcuts import render_to_response, redirect, render
 from django.template import RequestContext
-from django.core.context_processors import csrf
 from django.contrib import auth
 from django.core.mail import send_mail
-from .forms import UserCreateForm
+from .forms import UserCreateForm, AvatarUploadForm
 from myuser.models import ExtUser
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
+from django.views.decorators.csrf import csrf_protect
+import os
 
 
 def name(request, args):
@@ -17,7 +18,6 @@ def name(request, args):
 
 def index(request):
     args = {}
-    args.update(csrf(request))
     if request.user.is_authenticated():
         args['user'] = request.user
         name(request, args)
@@ -27,7 +27,6 @@ def index(request):
 
 def contact(request):
     args = {}
-    args.update(csrf(request))
     if request.user.is_authenticated():
         args['user'] = request.user
         name(request, args)
@@ -43,15 +42,15 @@ def contact(request):
             except Exception as e:
                 print(e)
                 args['send_error'] = 'Ваше сообщение не удалось отправить.'
-        return render_to_response('contacts.html', args)
+        return render(request, 'contacts.html', args)
 
     else:
         return render_to_response('contacts.html', args)
 
 
+@csrf_protect
 def login(request):
     args = {}
-    args.update(csrf(request))
     if request.POST:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
@@ -63,9 +62,9 @@ def login(request):
             return redirect('/')
         else:
             args['login_error'] = "Net takovih"
-            return render_to_response('login.html', args)
+            return render(request, 'login.html', args)
     else:
-        return render_to_response('login.html', args)
+        return render(request, 'login.html', args)
 
 
 def logout(request):
@@ -75,7 +74,6 @@ def logout(request):
 
 def register(request):
     args = {}
-    args.update(csrf(request))
     args['form'] = UserCreateForm()
     if request.POST:
         newuser_form = UserCreateForm(request.POST)
@@ -95,15 +93,15 @@ def register(request):
         else:
             args['reg_error'] = 'Error.'
             args['form'] = newuser_form
-    return render_to_response('register.html', args)
+    return render(request, 'register.html', args)
 
 
 def kabinet(request):
     args = {}
-    args.update(csrf(request))
-    name(request, args)
     if request.user.is_authenticated():
+        name(request, args)
         args['user'] = request.user
+        args['upload_form'] = AvatarUploadForm()
         if request.POST:
             user = request.user
             try:
@@ -119,15 +117,13 @@ def kabinet(request):
                 user.email = request.POST.get('email', '')
                 user.save()
                 return redirect('/kabinet/')
-
-        return render_to_response('kabinet.html', args)
+        return render(request, 'kabinet.html', args)
     else:
         return render_to_response('index.html', args)
 
 
 def password_change(request):
     args = {}
-    args.update(csrf(request))
     name(request, args)
     args['user'] = request.user
     if request.method == 'POST':
@@ -139,16 +135,42 @@ def password_change(request):
         else:
             args['errors'] = 'Не удалось изменить пароль. Проверке правильность ввода.'
 
-    return render_to_response('kabinet.html', args)
+    return render(request, 'kabinet.html', args)
 
 
 def delete_user(request):
-    args = {}
-    args.update(csrf(request))
+    args = dict()
     args['user'] = request.user
     name(request, args)
     if request.method == 'POST':
         user = ExtUser.objects.get(username=request.user.username)
-        user.delete()
-        args['delet'] = 'Аккаунт успешно удалён из базы данных.'
+        user.suicide()
     return redirect('/')
+
+
+def new_avatar(request):
+    form = AvatarUploadForm(request.POST, request.FILES)
+    if form.is_valid():
+        user = request.user
+        user.delete_avatar()
+        user.avatar = request.FILES['image']
+        if os.path.basename(user.avatar.name).find('.') == -1:
+            user.avatar.name += '.png'
+        user.save()
+    return redirect('/kabinet/')
+
+
+def change_avatar(request, variant=None):
+    from PIL import Image
+    user = request.user
+    user_avatar = Image.open(user.avatar.path)
+    user_avatar = user_avatar.rotate(90)
+    user_avatar.save(user.avatar.path)
+
+    return redirect('/kabinet/')
+
+
+def delete_avatar(request):
+    user = request.user
+    user.delete_avatar()
+    return redirect('/kabinet/')

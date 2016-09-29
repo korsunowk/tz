@@ -14,12 +14,19 @@
             <td>
                 <div class="avatar">
 	                <img src="{{ user.avatar.url }}" height="200" width="225"><br>
-                    <form action="/new_avatar/" method="POST">
-
+                    <form action="/new_avatar/" method="POST" enctype="multipart/form-data">
+                        {% csrf_token %}
+                        {{ upload_form.image }}
+                        <input type="submit" class="btn btn-success ava" value="Изменить аватар"><br>
                     </form>
-                    <a class="btn btn-success ava" href="#">Изменить аватар</a><br>
-                    <a class="btn btn-info ava" href="#">Редактировать аватар</a><br>
-                    <a class="btn btn-danger ava" href="#">Удалить аватар</a>
+                    <form action="/change_avatar/" method="POST">
+                        {% csrf_token %}
+                        <a class="btn btn-info ava"><input type="submit" value="Редактировать аватар" style="background-color: dodgerblue"></a><br>
+                    </form>
+                    <form action="/delete_avatar/" method="POST">
+                        {% csrf_token %}
+                        <a class="btn btn-danger ava"><input type="submit" value="Удалить аватар" style="background-color: red"></a><br>
+                    </form>
                 </div>
             </td>
             <td>
