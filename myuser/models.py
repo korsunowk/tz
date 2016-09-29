@@ -109,6 +109,19 @@ class ExtUser(AbstractBaseUser, PermissionsMixin):
             os.remove('media/avatars/avatar.png')
             self.avatar.save(name='avatar.png', content=new_image)
 
+    def change_avatar(self):
+        from PIL import Image
+        from django.core.files import File
+
+        if self.avatar.name != 'avatars/avatar.png':
+            user_avatar = Image.open(self.avatar.path)
+            user_avatar = user_avatar.rotate(90)
+            user_avatar.save(self.avatar.path)
+        else:
+            changed_avatar = File(open('media/avatars/avatar.png', 'rb'))
+            self.avatar.save(name='copy_of_default_avatar.png', content=changed_avatar)
+            self.change_avatar()
+
     def suicide(self):
         self.delete_avatar()
         self.delete()

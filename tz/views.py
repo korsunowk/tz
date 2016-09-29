@@ -168,9 +168,7 @@ def new_avatar(request):
 def change_avatar(request, variant=None):
     from PIL import Image
     user = request.user
-    user_avatar = Image.open(user.avatar.path)
-    user_avatar = user_avatar.rotate(90)
-    user_avatar.save(user.avatar.path)
+    user.change_avatar()
 
     return redirect('/kabinet/')
 
