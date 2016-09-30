@@ -17,7 +17,7 @@ def name(request, args):
 
 
 def index(request):
-    args = {}
+    args = dict()
     if request.user.is_authenticated():
         args['user'] = request.user
         name(request, args)
@@ -27,7 +27,7 @@ def index(request):
 
 @csrf_protect
 def contact(request):
-    args = {}
+    args = dict()
     if request.user.is_authenticated():
         args['user'] = request.user
         name(request, args)
@@ -51,7 +51,7 @@ def contact(request):
 
 @csrf_protect
 def login(request):
-    args = {}
+    args = dict()
     if request.POST:
         username = request.POST.get('username', '')
         password = request.POST.get('password', '')
@@ -103,7 +103,7 @@ def register(request):
 
 
 def kabinet(request):
-    args = {}
+    args = dict()
     if request.user.is_authenticated():
         name(request, args)
         args['user'] = request.user
@@ -129,7 +129,7 @@ def kabinet(request):
 
 
 def password_change(request):
-    args = {}
+    args = dict()
     name(request, args)
     args['user'] = request.user
     if request.method == 'POST':
