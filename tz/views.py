@@ -9,6 +9,8 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.decorators.csrf import csrf_protect
 import os
+from oauth2client import client
+from django.http import HttpResponse
 
 
 def name(request, args):
@@ -177,3 +179,32 @@ def delete_avatar(request):
     user = request.user
     user.delete_avatar()
     return redirect('/kabinet/')
+
+
+def vk_login(request):
+    return redirect('https://oauth.vk.com/authorize?client_id=5649330&display=page&redirect_uri=http://127.0.0.1:8000/vk_callback&scope=email&response_type=code&v=5.56&revoke=1')
+
+
+def vk_callback(request):
+    from httplib2 import Http
+    import vk
+    import json
+    import datetime
+
+    resp, content = Http().request(uri='https://oauth.vk.com/access_token?client_id=5649330&client_secret=qZjV2yMgO092tVjKJ2AP&redirect_uri=http://127.0.0.1:8000/vk_callback&code='+request.GET.get('code', ''), method='GET')
+
+    content = json.loads(content.decode('ascii'))
+    token = content['access_token']
+    user_id = content['user_id']
+    email = content['email']
+    session = vk.Session(access_token=token)
+    new_user_data = vk.API(session=session).users.get(user_ids=user_id, fields=['bdate'])[0]
+    new_user = ExtUser.objects.create(
+        username='vk_id: '.__add__(user_id.__str__()),
+        email=email,
+        firstname=new_user_data['first_name'],
+        lastname=new_user_data['last_name'],
+        date_of_birth=datetime.datetime.strptime(new_user_data['bdate'].replace('.', '-'), '%d-%m-%Y')
+    )
+    auth.login(request, new_user)
+    return redirect('/')

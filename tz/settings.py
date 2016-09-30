@@ -42,6 +42,8 @@ INSTALLED_APPS = [
 
 ]
 
+CAPTCHA_CHALLENGE_FUNCT = 'captcha.helpers.math_challenge'
+
 MIDDLEWARE_CLASSES = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',

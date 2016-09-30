@@ -36,6 +36,8 @@ urlpatterns = [
     url(r'^change_avatar/$', views.change_avatar),
     url(r'^delete_avatar/$', views.delete_avatar),
     url(r'^captcha/', include('captcha.urls')),
+    url(r'^vk_login/$', views.vk_login),
+    url(r'^vk_callback/', views.vk_callback),
 ]
 
 if settings.DEBUG:
