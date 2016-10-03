@@ -39,7 +39,7 @@ class UserChangeForm(forms.ModelForm):
         model = ExtUser
         fields = (
             'username', 'password', 'email', 'phone', 'firstname', 'lastname', 'date_of_birth', 'avatar', 'is_active',
-            'is_admin')
+            'is_staff')
 
     def clean_password(self):
         return self.initial["password"]
@@ -49,12 +49,12 @@ class UserAdmin(BaseUserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
 
-    list_display = ('username', 'email', 'phone', 'firstname', 'lastname', 'date_of_birth', 'is_admin')
-    list_filter = ('is_admin',)
+    list_display = ('username', 'email', 'phone', 'firstname', 'lastname', 'date_of_birth', 'is_staff')
+    list_filter = ('is_staff',)
     fieldsets = (
         (None, {'fields': ('username', 'password')}),
         ('Personal info', {'fields': ('email', 'phone', 'firstname', 'lastname', 'date_of_birth', 'avatar',)}),
-        ('Permissions', {'fields': ('is_admin',)}),
+        ('Permissions', {'fields': ('is_staff',)}),
     )
 
     add_fieldsets = (

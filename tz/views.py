@@ -48,7 +48,7 @@ class UserView(View):
             user = auth.authenticate(username=username, password=password)
             if user is not None and user.is_active:
                 auth.login(request, user)
-                return redirect('/')
+                return redirect('/kabinet/')
             else:
                 args['login_error'] = "Net takovih"
                 return render(request, 'login.html', args)
@@ -77,10 +77,10 @@ class UserView(View):
                     try:
                         send_mail('Регистрация на сайте', 'Вы успешно зарегестрировались на сайте !\n Поздравляем!',
                                   'korsunowk@yandex.ua', [request.POST.get('email', '')])
-                        return redirect('/')
+                        return redirect('/kabinet/')
                     except Exception as e:
                         print(e)
-                        return redirect('/')
+                        return redirect('/kabinet/')
                 else:
                     args['reg_error'] = 'Error.'
                     args['form'] = newuser_form

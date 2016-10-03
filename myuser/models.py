@@ -26,7 +26,6 @@ class UserManager(BaseUserManager):
     def create_superuser(self, username, password, **fields):
         fields.setdefault('is_staff', True)
         fields.setdefault('is_superuser', True)
-        fields.setdefault('is_admin', True)
 
         return self.create_user(username=username, password=password, **fields)
 
@@ -88,17 +87,17 @@ class ExtUser(AbstractBaseUser, PermissionsMixin):
         default=True
     )
 
-    is_admin = models.BooleanField(
-        'Is admin',
+    is_staff = models.BooleanField(
+        'Is staff',
         default=False
     )
 
     def get_full_name(self):
         return self.username
 
-    @property
-    def is_staff(self):
-        return self.is_admin
+    # @property
+    # def is_staff(self):
+    #     return self.is_admin
 
     def get_short_name(self):
         return self.username
