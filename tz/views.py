@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from django.shortcuts import render_to_response, redirect, render
+from django.shortcuts import redirect, render
 from django.contrib import auth
 from django.core.mail import send_mail
 from .forms import UserCreateForm, AvatarUploadForm, CaptchaForm
@@ -7,6 +7,8 @@ from myuser.models import ExtUser
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import View
+import facebook
+from django.http import HttpResponse
 import os
 
 
@@ -88,6 +90,8 @@ class UserView(View):
                 args['form'] = newuser_form
         return render(request, 'register.html', args)
 
+
+class UserEditView(View):
     @staticmethod
     def kabinet(request):
         args = dict()
@@ -112,8 +116,6 @@ class UserView(View):
         else:
             return redirect('/')
 
-
-class UserEditView(View):
     @staticmethod
     def password_change(request):
         args = dict()
@@ -185,3 +187,33 @@ def vk_callback(request):
 
     auth.login(request, new_user[0])
     return redirect('/')
+
+
+def facebook_callback(request):
+    from tz import settings
+    from httplib2 import Http
+    import json
+    import datetime
+
+    code = request.GET.get('code', False)
+    if code:
+        resp, content = Http().request(uri='https://graph.facebook.com/v2.7/oauth/access_token?client_id=%s&'
+                                           'client_secret=%s&'
+                                           'redirect_uri=http://127.0.0.1:8000/facebook_callback/&'
+                                           'code=%s' % (settings.FACEBOOK_APP, settings.FACEBOOK_SECRET, code),
+                                       method='GET')
+
+        content = json.loads(content.decode('ascii'))
+        token = content['access_token']
+        session = facebook.GraphAPI(access_token=token)
+        args = {'fields': 'name,email,birthday'}
+        new_user_data = session.get_object(id='me', **args)
+        new_user = ExtUser.objects.get_or_create(
+            username=new_user_data['name'],
+            email=new_user_data['email'],
+            firstname=new_user_data['name'].split()[0],
+            lastname=new_user_data['name'].split()[1],
+            date_of_birth=datetime.datetime.strptime(new_user_data['birthday'].replace('/', '-'), '%m-%d-%Y')
+        )
+        auth.login(request, new_user[0])
+        return redirect('/')

@@ -26,7 +26,7 @@ admin.autodiscover()
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', TemplateView.as_view(template_name='index.html')),
-    url(r'^kabinet/$', views.UserView().kabinet),
+    url(r'^kabinet/$', views.UserEditView().kabinet),
     url(r'^login/$', views.UserView().login),
     url(r'^logout/$', views.UserView().logout),
     url(r'^contacts/$', views.ContactView.as_view()),
@@ -39,6 +39,8 @@ urlpatterns = [
     url(r'^captcha/', include('captcha.urls')),
     url(r'^vk_login/$', RedirectView.as_view(url=settings.VK_REDIRECT)),
     url(r'^vk_callback/', views.vk_callback),
+    url(r'facebook_callback/', views.facebook_callback),
+    url(r'facebook_login/', RedirectView.as_view(url=settings.FACEBOOK_REDIRECT))
 ]
 
 if settings.DEBUG:
