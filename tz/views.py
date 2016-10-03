@@ -200,31 +200,30 @@ class CallbackView(View):
         from django.core.files import File
 
         code = request.GET.get('code', False)
-        if code:
-            resp, content = Http().request(uri='https://graph.facebook.com/v2.7/oauth/access_token?client_id=%s&'
-                                               'client_secret=%s&'
-                                               'redirect_uri=http://127.0.0.1:8000/facebook_callback/&'
-                                               'code=%s' % (settings.FACEBOOK_APP, settings.FACEBOOK_SECRET, code),
-                                           method='GET')
+        resp, content = Http().request(uri='https://graph.facebook.com/v2.7/oauth/access_token?client_id=%s&'
+                                           'client_secret=%s&'
+                                           'redirect_uri=http://127.0.0.1:8000/facebook_callback/&'
+                                           'code=%s' % (settings.FACEBOOK_APP, settings.FACEBOOK_SECRET, code),
+                                       method='GET')
 
-            content = json.loads(content.decode('ascii'))
-            token = content['access_token']
-            session = facebook.GraphAPI(access_token=token)
-            args = {'fields': 'name,email,birthday,picture'}
-            new_user_data = session.get_object(id='me', **args)
+        content = json.loads(content.decode('ascii'))
+        token = content['access_token']
+        session = facebook.GraphAPI(access_token=token)
+        args = {'fields': 'name,email,birthday,picture'}
+        new_user_data = session.get_object(id='me', **args)
 
-            new_user = ExtUser.objects.get_or_create(
-                username=new_user_data['name'],
-                email=new_user_data['email'],
-                firstname=new_user_data['name'].split()[0],
-                lastname=new_user_data['name'].split()[1],
-                date_of_birth=datetime.datetime.strptime(new_user_data['birthday'].replace('/', '-'), '%m-%d-%Y')
-            )
-            with open('media/tmp_avatar.jpg', 'wb') as file:
-                file.write(requests.get(new_user_data['picture']['data']['url']).content)
-            with open('media/tmp_avatar.jpg', 'rb') as file:
-                new_user[0].avatar.save(name="media/avatars/%s's_avatar.jpg" % new_user_data['name'],
-                                        content=File(file))
-            os.remove('media/tmp_avatar.jpg')
-            auth.login(request, new_user[0])
-            return redirect('/kabinet/')
+        new_user = ExtUser.objects.get_or_create(
+            username=new_user_data['name'],
+            email=new_user_data['email'],
+            firstname=new_user_data['name'].split()[0],
+            lastname=new_user_data['name'].split()[1],
+            date_of_birth=datetime.datetime.strptime(new_user_data['birthday'].replace('/', '-'), '%m-%d-%Y')
+        )
+        with open('media/tmp_avatar.jpg', 'wb') as file:
+            file.write(requests.get(new_user_data['picture']['data']['url']).content)
+        with open('media/tmp_avatar.jpg', 'rb') as file:
+            new_user[0].avatar.save(name="media/avatars/%s's_avatar.jpg" % new_user_data['name'],
+                                    content=File(file))
+        os.remove('media/tmp_avatar.jpg')
+        auth.login(request, new_user[0])
+        return redirect('/kabinet/')
