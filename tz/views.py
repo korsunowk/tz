@@ -10,11 +10,6 @@ from django.views.generic import View
 import os
 
 
-def name(request, args):
-    args['name'] = request.user.firstname + " " + request.user.lastname[0]
-    return args
-
-
 class AvatarView(View):
     @staticmethod
     def new_avatar(request):
@@ -52,8 +47,6 @@ class UserView(View):
             user = auth.authenticate(username=username, password=password)
             if user is not None and user.is_active:
                 auth.login(request, user)
-                args['user'] = request.user
-                name(request, args)
                 return redirect('/')
             else:
                 args['login_error'] = "Net takovih"
@@ -99,8 +92,6 @@ class UserView(View):
     def kabinet(request):
         args = dict()
         if request.user.is_authenticated():
-            name(request, args)
-            args['user'] = request.user
             args['upload_form'] = AvatarUploadForm()
             if request.POST:
                 user = request.user
@@ -119,15 +110,13 @@ class UserView(View):
                     return redirect('/kabinet/')
             return render(request, 'kabinet.html', args)
         else:
-            return render_to_response('index.html', args)
+            return redirect('/')
 
 
 class UserEditView(View):
     @staticmethod
     def password_change(request):
         args = dict()
-        name(request, args)
-        args['user'] = request.user
         if request.method == 'POST':
             form = PasswordChangeForm(user=request.user, data=request.POST)
             if form.is_valid():
@@ -141,39 +130,20 @@ class UserEditView(View):
 
     @staticmethod
     def delete_user(request):
-        args = dict()
-        args['user'] = request.user
-        name(request, args)
-        if request.method == 'POST':
-            user = ExtUser.objects.get(username=request.user.username)
-            user.suicide()
+        user = ExtUser.objects.get(username=request.user.username)
+        user.suicide()
         return redirect('/')
 
 
-def index(request):
-    args = dict()
-    if request.user.is_authenticated():
-        args['user'] = request.user
-        name(request, args)
-
-    return render_to_response('index.html', args)
-
-
 class ContactView(View):
+    args = dict()
+
     @staticmethod
     def get(request):
-        args = dict()
-        if request.user.is_authenticated():
-            args['user'] = request.user
-            name(request, args)
-        return render(request, 'contacts.html', args)
+        return render(request, 'contacts.html')
 
     @staticmethod
     def post(request):
-        args = dict()
-        if request.user.is_authenticated():
-            args['user'] = request.user
-            name(request, args)
         subject = request.POST.get('subject', '')
         message = request.POST.get('message', '') + "\n message from : " + request.POST.get('sender', '')
         sender = 'korsunowk@yandex.ua'
@@ -181,11 +151,11 @@ class ContactView(View):
         if subject and message and request.POST.get('sender', ''):
             try:
                 send_mail(subject, message, sender, recipients)
-                args['send_success'] = 'Ваше сообщение успешно отправлено.'
+                ContactView.args['send_success'] = 'Ваше сообщение успешно отправлено.'
             except Exception as e:
                 print(e)
-                args['send_error'] = 'Ваше сообщение не удалось отправить.'
-        return render(request, 'contacts.html', args)
+                ContactView.args['send_error'] = 'Ваше сообщение не удалось отправить.'
+        return render(request, 'contacts.html', ContactView.args)
 
 
 def vk_callback(request):

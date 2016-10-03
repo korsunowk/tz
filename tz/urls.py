@@ -18,14 +18,14 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from tz import views, settings
 from django.conf.urls.static import static
-from django.views.generic import RedirectView
+from django.views.generic import RedirectView, TemplateView
 
 
 admin.autodiscover()
 
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    url(r'^$', views.index),
+    url(r'^$', TemplateView.as_view(template_name='index.html')),
     url(r'^kabinet/$', views.UserView().kabinet),
     url(r'^login/$', views.UserView().login),
     url(r'^logout/$', views.UserView().logout),

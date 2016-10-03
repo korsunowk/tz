@@ -21,7 +21,7 @@
                 <li><a href="/contacts/">Контакты</a></li>
             {% if user.is_authenticated %}
                 <li><a href="/kabinet/">Личный кабинет</a></li>
-                <li><img src="{{ user.avatar.url }}" height="30" width="30"> <a href="/kabinet" class="clown">{{ name }}</a> | <a href="/logout" class="clown">Выйти</a></li>
+                <li><img src="{{ user.avatar.url }}" height="30" width="30"> <a href="/kabinet" class="clown">{{ user.firstname  }} {{ user.lastname|first }}</a> | <a href="/logout" class="clown">Выйти</a></li>
             {% else %}
                 <li><a href="/login/" class="clown">Войти</a> | <a href="/register/" class="clown">Регистрация</a></li>
             {% endif %}
