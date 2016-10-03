@@ -222,7 +222,7 @@ class CallbackView(View):
         with open('media/tmp_avatar.jpg', 'wb') as file:
             file.write(requests.get(new_user_data['picture']['data']['url']).content)
         with open('media/tmp_avatar.jpg', 'rb') as file:
-            new_user[0].avatar.save(name="media/avatars/%s's_avatar.jpg" % new_user_data['name'],
+            new_user[0].avatar.save(name="media/%s's_avatar.jpg" % new_user_data['name'],
                                     content=File(file))
         os.remove('media/tmp_avatar.jpg')
         auth.login(request, new_user[0])
