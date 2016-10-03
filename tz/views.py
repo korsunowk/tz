@@ -8,7 +8,6 @@ from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import View
 import facebook
-from django.http import HttpResponse
 import os
 
 
@@ -160,60 +159,72 @@ class ContactView(View):
         return render(request, 'contacts.html', ContactView.args)
 
 
-def vk_callback(request):
-    from httplib2 import Http
-    import vk
-    import json
-    import datetime
+class CallbackView(View):
 
-    resp, content = Http().request(uri='https://oauth.vk.com/access_token?client_id=5649330&'
-                                       'client_secret=qZjV2yMgO092tVjKJ2AP&'
-                                       'redirect_uri=http://127.0.0.1:8000/vk_callback&'
-                                       'code='+request.GET.get('code', ''), method='GET')
+    @staticmethod
+    def vk_callback(request):
+        from httplib2 import Http
+        import vk
+        import json
+        import datetime
 
-    content = json.loads(content.decode('ascii'))
-    token = content['access_token']
-    user_id = content['user_id']
-    email = content['email']
-    session = vk.Session(access_token=token)
-    new_user_data = vk.API(session=session).users.get(user_ids=user_id, fields=['bdate'])[0]
-    new_user = ExtUser.objects.get_or_create(
-        username='vk_id: '.__add__(user_id.__str__()),
-        email=email,
-        firstname=new_user_data['first_name'],
-        lastname=new_user_data['last_name'],
-        date_of_birth=datetime.datetime.strptime(new_user_data['bdate'].replace('.', '-'), '%d-%m-%Y')
-    )
-
-    auth.login(request, new_user[0])
-    return redirect('/')
-
-
-def facebook_callback(request):
-    from tz import settings
-    from httplib2 import Http
-    import json
-    import datetime
-
-    code = request.GET.get('code', False)
-    if code:
-        resp, content = Http().request(uri='https://graph.facebook.com/v2.7/oauth/access_token?client_id=%s&'
-                                           'client_secret=%s&'
-                                           'redirect_uri=http://127.0.0.1:8000/facebook_callback/&'
-                                           'code=%s' % (settings.FACEBOOK_APP, settings.FACEBOOK_SECRET, code),
-                                       method='GET')
+        resp, content = Http().request(uri='https://oauth.vk.com/access_token?client_id=5649330&'
+                                           'client_secret=qZjV2yMgO092tVjKJ2AP&'
+                                           'redirect_uri=http://127.0.0.1:8000/vk_callback&'
+                                           'code='+request.GET.get('code', ''), method='GET')
 
         content = json.loads(content.decode('ascii'))
         token = content['access_token']
-        session = facebook.GraphAPI(access_token=token)
-        args = {'fields': 'name,email,birthday'}
-        new_user_data = session.get_object(id='me', **args)
+        user_id = content['user_id']
+        email = content['email']
+        session = vk.Session(access_token=token)
+        new_user_data = vk.API(session=session).users.get(user_ids=user_id, fields=['bdate'])[0]
         new_user = ExtUser.objects.get_or_create(
-            username=new_user_data['name'],
-            email=new_user_data['email'],
-            firstname=new_user_data['name'].split()[0],
-            lastname=new_user_data['name'].split()[1],
-            date_of_birth=datetime.datetime.strptime(new_user_data['birthday'].replace('/', '-'), '%m-%d-%Y')
+            username='vk_id: '.__add__(user_id.__str__()),
+            email=email,
+            firstname=new_user_data['first_name'],
+            lastname=new_user_data['last_name'],
+            date_of_birth=datetime.datetime.strptime(new_user_data['bdate'].replace('.', '-'), '%d-%m-%Y')
         )
+
         auth.login(request, new_user[0])
-        return redirect('/')
+        return redirect('/kabinet')
+
+    @staticmethod
+    def facebook_callback(request):
+        from tz import settings
+        from httplib2 import Http
+        import json
+        import datetime
+        import requests
+        from django.core.files import File
+
+        code = request.GET.get('code', False)
+        if code:
+            resp, content = Http().request(uri='https://graph.facebook.com/v2.7/oauth/access_token?client_id=%s&'
+                                               'client_secret=%s&'
+                                               'redirect_uri=http://127.0.0.1:8000/facebook_callback/&'
+                                               'code=%s' % (settings.FACEBOOK_APP, settings.FACEBOOK_SECRET, code),
+                                           method='GET')
+
+            content = json.loads(content.decode('ascii'))
+            token = content['access_token']
+            session = facebook.GraphAPI(access_token=token)
+            args = {'fields': 'name,email,birthday,picture'}
+            new_user_data = session.get_object(id='me', **args)
+
+            new_user = ExtUser.objects.get_or_create(
+                username=new_user_data['name'],
+                email=new_user_data['email'],
+                firstname=new_user_data['name'].split()[0],
+                lastname=new_user_data['name'].split()[1],
+                date_of_birth=datetime.datetime.strptime(new_user_data['birthday'].replace('/', '-'), '%m-%d-%Y')
+            )
+            with open('media/tmp_avatar.jpg', 'wb') as file:
+                file.write(requests.get(new_user_data['picture']['data']['url']).content)
+            with open('media/tmp_avatar.jpg', 'rb') as file:
+                new_user[0].avatar.save(name="media/avatars/%s's_avatar.jpg" % new_user_data['name'],
+                                        content=File(file))
+            os.remove('media/tmp_avatar.jpg')
+            auth.login(request, new_user[0])
+            return redirect('/kabinet/')

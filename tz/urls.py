@@ -38,8 +38,8 @@ urlpatterns = [
     url(r'^delete_avatar/$', views.AvatarView().delete_avatar),
     url(r'^captcha/', include('captcha.urls')),
     url(r'^vk_login/$', RedirectView.as_view(url=settings.VK_REDIRECT)),
-    url(r'^vk_callback/', views.vk_callback),
-    url(r'facebook_callback/', views.facebook_callback),
+    url(r'^vk_callback/', views.CallbackView().vk_callback),
+    url(r'facebook_callback/', views.CallbackView().facebook_callback),
     url(r'facebook_login/', RedirectView.as_view(url=settings.FACEBOOK_REDIRECT))
 ]
 

@@ -1,3 +1,4 @@
+facebook
 django==1.10
 Pillow
 django-simple-captcha
