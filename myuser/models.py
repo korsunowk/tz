@@ -38,6 +38,7 @@ class ExtUser(AbstractBaseUser, PermissionsMixin):
         unique=True,
         db_index=True
     )
+
     email = models.EmailField(
         'Email',
         max_length=255,
@@ -46,6 +47,7 @@ class ExtUser(AbstractBaseUser, PermissionsMixin):
         blank=False
 
     )
+
     phone = models.CharField(
         'Phone',
         max_length=10,
@@ -53,12 +55,14 @@ class ExtUser(AbstractBaseUser, PermissionsMixin):
         blank=False
 
     )
+
     firstname = models.CharField(
         'First name',
         max_length=40,
         null=False,
         blank=False
     )
+
     lastname = models.CharField(
         'Last name',
         max_length=40,
@@ -76,11 +80,14 @@ class ExtUser(AbstractBaseUser, PermissionsMixin):
         upload_to="avatars/",
         default="avatars/avatar.png",
         blank=True,
-        null=True)
+        null=True
+    )
+
     is_active = models.BooleanField(
         'Active',
         default=True
     )
+
     is_admin = models.BooleanField(
         'Is admin',
         default=False

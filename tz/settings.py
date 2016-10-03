@@ -150,3 +150,7 @@ EMAIL_USE_TLS = True
 
 
 AUTH_USER_MODEL = 'myuser.ExtUser'
+
+
+VK_REDIRECT = 'https://oauth.vk.com/authorize?client_id=5649330&display=page&' \
+              'redirect_uri=http://127.0.0.1:8000/vk_callback&scope=email&response_type=code&v=5.56&revoke=1'
