@@ -16,6 +16,8 @@ class UserCreateForm(UserCreationForm):
         attrs={'placeholder': 'enter your lastname', 'required': 'required'}))
     date_of_birth = forms.CharField(required=True, widget=forms.TextInput(attrs={'required': 'required', 'id': 'date'}))
 
+    captcha = CaptchaField()
+
     class Meta:
         model = ExtUser
         fields = ("username", "email", 'phone', 'firstname', 'lastname', 'date_of_birth', "password1", "password2")

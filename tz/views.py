@@ -6,7 +6,7 @@ from .forms import UserCreateForm, AvatarUploadForm, CaptchaForm
 from myuser.models import ExtUser
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
-from django.views.generic import View
+from django.views.generic import View, CreateView
 import facebook
 import os
 
@@ -227,3 +227,14 @@ class CallbackView(View):
         os.remove('media/tmp_avatar.jpg')
         auth.login(request, new_user[0])
         return redirect('/kabinet/')
+
+
+class CreateUser(CreateView):
+    form_class = UserCreateForm
+    template_name = 'register.html'
+    success_url = '/kabinet/'
+
+    def form_valid(self, form):
+        user = form.save()
+        auth.login(self.request, user)
+        return redirect(self.success_url)

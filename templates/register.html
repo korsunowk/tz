@@ -85,10 +85,16 @@
                 <tr>
                     <td colspan="2">
                         <br>
-                        {{ captcha.captcha }}
+                        {{ form.captcha }}
                     </td>
                 </tr>
             </table>
+
+            {% if form.errors %}
+                {{ form.errors }}
+            {% endif %}
+
+
             {% if captcha_error %}
                 <br>
                 <center><h4> Введите правильно символы с картинки. </h4></center>
