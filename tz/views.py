@@ -7,8 +7,15 @@ from myuser.models import ExtUser
 from django.contrib.auth import update_session_auth_hash
 from django.contrib.auth.forms import PasswordChangeForm
 from django.views.generic import View, CreateView
+from tz import settings
+from django.core.files import File
+from httplib2 import Http
 import facebook
 import os
+import requests
+import vk
+import json
+import datetime
 
 
 class AvatarView(View):
@@ -163,10 +170,6 @@ class CallbackView(View):
 
     @staticmethod
     def vk_callback(request):
-        from httplib2 import Http
-        import vk
-        import json
-        import datetime
 
         resp, content = Http().request(uri='https://oauth.vk.com/access_token?client_id=5649330&'
                                            'client_secret=qZjV2yMgO092tVjKJ2AP&'
@@ -192,12 +195,6 @@ class CallbackView(View):
 
     @staticmethod
     def facebook_callback(request):
-        from tz import settings
-        from httplib2 import Http
-        import json
-        import datetime
-        import requests
-        from django.core.files import File
 
         code = request.GET.get('code', False)
         resp, content = Http().request(uri='https://graph.facebook.com/v2.7/oauth/access_token?client_id=%s&'
