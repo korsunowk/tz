@@ -6,4 +6,3 @@ myuser/__pycache__/
 myuser/migrations/__pycache__/0005_auto_20160929_0737.cpython-34.pyc
 myuser/migrations/__pycache__/0006_extuser_is_staff.cpython-34.pyc
 myuser/migrations/__pycache__/0007_remove_extuser_is_admin.cpython-34.pyc
-tz/__pycache__/
